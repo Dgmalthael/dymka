@@ -416,12 +416,25 @@ section{padding:14px 0 60px}
   background:linear-gradient(170deg,var(--surface2),var(--surface));
   border:1px solid var(--line);border-radius:22px;max-width:560px;width:100%;
   padding:34px;box-shadow:var(--shadow);position:relative;
+  max-height:88vh;overflow-y:auto;overscroll-behavior:contain;
 }
 .modal h2{font-size:1.7rem;margin-bottom:4px}
 .modal .x{
-  position:absolute;top:16px;right:18px;background:none;border:0;color:var(--ink-mute);
-  font-size:1.4rem;cursor:pointer;line-height:1;
+  position:absolute;top:14px;right:16px;
+  width:38px;height:38px;border-radius:50%;
+  background:var(--surface2);border:1px solid var(--line);color:var(--ink-soft);
+  font-size:1.15rem;cursor:pointer;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  z-index:30;box-shadow:0 4px 10px rgba(0,0,0,.45);transition:.16s;
 }
+.modal .x:hover{color:var(--ink);border-color:var(--ember)}
+
+
+/* Subtle scrollbar polish */
+.modal::-webkit-scrollbar{width:10px}
+.modal::-webkit-scrollbar-track{background:transparent}
+.modal::-webkit-scrollbar-thumb{background:var(--line);border-radius:5px;border:2px solid var(--surface2)}
+.modal::-webkit-scrollbar-thumb:hover{background:var(--ember-deep)}
 .tiers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
 .tier{border:1px solid var(--line);border-radius:15px;padding:20px 18px;background:var(--bg2)}
 .tier.best{border-color:var(--ember);background:var(--surface);position:relative}
@@ -469,8 +482,103 @@ section{padding:14px 0 60px}
   border:1px solid var(--line);border-radius:16px;padding:20px;transition:transform .18s,border-color .18s;
 }
 .brand-card:hover{transform:translateY(-4px);border-color:var(--ember)}
-.bc-head{display:flex;align-items:flex-start;gap:10px}
+.brand-card.clickable{cursor:pointer;position:relative}
+.brand-card.clickable::after{
+  content:"›";position:absolute;top:14px;right:16px;
+  font-size:1.3rem;color:var(--ink-mute);font-weight:300;
+  transition:transform .25s ease,color .25s ease;
+}
+.brand-card.clickable:hover::after{color:var(--ember);transform:translateX(3px)}
+
+/* Brand-detail pop-up */
+.modal-brand{max-width:780px}
+.modal-brand h2{font-size:1.7rem}
+#brandModalBody{margin-top:18px}
+.bm-section{margin-bottom:24px}
+.bm-section h3{
+  font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ember);margin-bottom:12px;font-weight:600;
+}
+.bm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.bm-item{
+  background:var(--bg2);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;font-size:.86rem;transition:border-color .2s;
+}
+.bm-item:hover{border-color:var(--ember)}
+.bm-item.bm-mono{border-left:3px solid var(--cat-mint)}
+.bm-item.bm-premade{border-left:3px solid var(--ember)}
+.bm-line{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px}
+.bm-tag{
+  font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:2px 7px;border-radius:99px;background:var(--bg);border:1px solid var(--line);
+  color:var(--ink-mute);
+}
+.bm-tag-ready{background:rgba(240,145,60,.18);color:var(--ember);border-color:rgba(240,145,60,.4)}
+.bm-tag-mono{background:rgba(67,194,168,.18);color:var(--cat-mint);border-color:rgba(67,194,168,.4)}
+.bm-name{color:var(--ink);font-weight:600;line-height:1.25;margin-bottom:4px}
+.bm-flavours{color:var(--ink-soft);font-size:.78rem;margin-bottom:4px;line-height:1.4}
+.bm-meta{color:var(--ink-mute);font-size:.7rem}
+.bm-section-more{display:flex;justify-content:center;margin-top:12px}
+.bm-section-more .show-more{padding:9px 20px;font-size:.78rem}
+.bm-section-more .show-more-collapse{
+  background:none;color:var(--ink-soft);border:1px solid var(--line);box-shadow:none;
+}
+.bm-section-more .show-more-collapse:hover{border-color:var(--ember);color:var(--ink);transform:none}
+.bm-thumb{
+  width:100%;height:110px;object-fit:contain;
+  background:var(--bg);border-radius:8px;border:1px solid var(--line);
+  margin-bottom:8px;display:block;
+}
+@media(max-width:680px){
+  .modal-brand{max-width:none}
+  .bm-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .bm-thumb{height:80px}
+  .bm-name{font-size:.82rem}
+  .bm-flavours{font-size:.7rem}
+}
+
+/* ── Brand dropdown + search field + show-more button (premade + library) ── */
+.pm-brand-sel,.pm-search{
+  background:var(--bg2);border:1px solid var(--line);border-radius:99px;
+  color:var(--ink);font-family:inherit;font-size:.78rem;font-weight:600;
+  padding:6px 14px;cursor:pointer;transition:.16s;
+}
+.pm-brand-sel:focus,.pm-search:focus{outline:none;border-color:var(--ember)}
+.pm-search{cursor:text;min-width:160px;flex:1;max-width:280px}
+.pm-search::placeholder{color:var(--ink-mute)}
+.pm-brand-sel{max-width:240px;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+.pm-brand-sel option{background:var(--surface);color:var(--ink)}
+
+.show-more-wrap{grid-column:1/-1;display:flex;justify-content:center;margin-top:10px}
+.show-more{
+  background:linear-gradient(135deg,var(--glow),var(--ember-deep));
+  color:#1a140c;border:0;font-family:inherit;font-weight:700;font-size:.84rem;
+  padding:11px 24px;border-radius:99px;cursor:pointer;
+  box-shadow:0 6px 18px -6px rgba(240,145,60,.7);transition:transform .15s;
+  display:inline-flex;align-items:center;gap:9px;
+}
+.show-more:hover{transform:translateY(-2px)}
+.show-more-count{font-weight:500;font-size:.74rem;color:rgba(26,20,12,.65)}
+@media(max-width:680px){
+  .pm-brand-sel,.pm-search{font-size:.74rem;padding:6px 12px}
+  .pm-brand-sel{max-width:none;flex:1}
+  .pm-search{max-width:none}
+  .show-more{padding:10px 18px;font-size:.78rem;width:100%;justify-content:center}
+}
+.bc-head{display:flex;align-items:flex-start;gap:12px}
 .bc-head .flag{font-size:1.5rem;line-height:1}
+.brand-logo-wrap{flex:none;width:46px;height:46px;display:block}
+.brand-logo-wrap svg{
+  width:100%;height:100%;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.35));
+  transition:transform .25s cubic-bezier(.4,1.4,.6,1);
+}
+.brand-card:hover .brand-logo-wrap svg{transform:rotate(-4deg) scale(1.06)}
+.bc-title{flex:1;min-width:0}
+.bc-title h3{display:inline-block}
+.flag-mini{font-size:.9rem;margin-left:6px;vertical-align:1px;opacity:.85}
+.brand-modal-logo{display:inline-block;width:38px;height:38px;vertical-align:-10px;margin-right:10px}
+.brand-modal-logo svg{width:100%;height:100%;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
 .bc-head h3{font-size:1.22rem;line-height:1.15}
 .bc-head .ru-name{font-size:.74rem;color:var(--ink-mute);letter-spacing:.04em}
 .bc-head .spacer{flex:1}
@@ -1081,6 +1189,16 @@ footer{border-top:1px solid var(--line);padding:30px 0 46px;margin-top:20px}
 </div>
 
 <!-- ============ ADD BRAND ============ -->
+<!-- ============ BRAND DETAIL POP-UP ============ -->
+<div class="overlay hidden" id="brandModal">
+  <div class="modal modal-brand">
+    <button class="x" onclick="closeBrandModal()">✕</button>
+    <h2 id="brandModalTitle">—</h2>
+    <p class="sub" id="brandModalSub">—</p>
+    <div id="brandModalBody"></div>
+  </div>
+</div>
+
 <div class="overlay hidden" id="addBrandModal">
   <div class="modal modal-form">
     <button class="x" onclick="closeAddBrand()">✕</button>
@@ -2305,10 +2423,10 @@ const STR={
   kicker:'Миксология кальяна',
   heroH:'Найди свой <i>идеальный</i> микс',
   heroP:'Подбор табачных миксов по правилам кальянной миксологии: база, добавка и оттенок в выверенных пропорциях.',
-  m1h:'Тест вкуса', m1p:'7 вопросов о настроении, сезоне и предпочтениях — 5 миксов из базы 100+.', m1go:'Пройти тест →',
+  m1h:'Тест вкуса', m1p:'7 вопросов о настроении, сезоне и предпочтениях — 5 миксов из живой базы.', m1go:'Пройти тест →',
   m2h:'Конструктор', m2p:'Выбери базу — собери микс из добавки и оттенка с живой раскладкой пропорций.', m2go:'Собрать микс →',
   m3h:'Готовые миксы', m3p:'Каталог фабричных премиксов: настроение, крепость и состав каждого продукта.', m3go:'Смотреть миксы →',
-  m4h:'Каталог брендов', m4p:'18 табачных брендов: крепость, нарезка, фирменные вкусы и линейки.', m4go:'Открыть каталог →',
+  m4h:'Каталог брендов', m4p:'Табачные бренды: крепость, нарезка, фирменные вкусы и линейки. Нажми на бренд — увидишь все его табаки.', m4go:'Открыть каталог →',
   m5h:'Библиотека рецептов', m5p:'Более 100 проверенных рецептов миксов. Фильтр по настроению, сезону, крепости — и рекомендация чаши под каждый.', m5go:'Открыть библиотеку →',
   libTitle:'Библиотека рецептов',
   libSub:'Все 100+ кураторских рецептов. Подбери по настроению, сезону или крепости — каждая карточка содержит раскладку, рекомендации брендов и тип чаши.',
@@ -2319,6 +2437,8 @@ const STR={
   pmSub:'Фабричные премиксы — табак, уже смешанный производителем. Фильтруй по настроению и крепости; каждую карточку можно сохранить в Google Таблицу.',
   pmMoodChill:'Чилл', pmMoodParty:'Компания', pmMoodExp:'Эксперимент',
   pmComp:'Состав', pmEmpty:'По фильтрам ничего не найдено.',
+  pmAllBrands:'Все бренды', pmSearch:'Поиск по названию или вкусу…', pmShowMore:'Показать ещё {n}',
+  libSearch:'Поиск по миксу или вкусу…',
   save:'Сохранить', saveToLibrary:'В библиотеку', saving:'Сохранение…', saved:'Сохранено',
   seedBtn:'Загрузить данные в Sheets', seedRunning:'Загрузка…', seedDone:'Готово · {n} строк',
   seedErr:'Не удалось загрузить — проверьте Sheets',
@@ -2342,6 +2462,12 @@ const STR={
   abDup:'Бренд «{name}» уже есть в каталоге.',
   abErr:'Не удалось сохранить бренд.',
   abErrName:'Введите название бренда',
+  brandModalLoading:'Загрузка табаков бренда…',
+  brandModalReady:'Готовые миксы',
+  brandModalMono:'Моно-вкусы',
+  brandModalEmpty:'Табаки этого бренда пока не загружены. Нажмите «📤 Загрузить данные в Sheets» во вкладке «Готовые миксы».',
+  brandModalGr:'гр',
+  brandModalCollapse:'Свернуть',
   sheetLocal:'Встроенные данные · Google Sheets не подключён',
   sheetSynced:'Синхронизировано с Google Sheets',
   sheetErr:'Sheets недоступны — показаны встроенные данные',
@@ -2401,10 +2527,10 @@ const STR={
   kicker:'Hookah Mixology',
   heroH:'Find your <i>perfect</i> mix',
   heroP:'Tobacco mixes built on hookah-mixology rules: base, additive and accent in proven proportions.',
-  m1h:'Flavor Quiz', m1p:'7 questions on mood, season and taste — 5 mixes picked from our 100+ library.', m1go:'Take the quiz →',
+  m1h:'Flavor Quiz', m1p:'7 questions on mood, season and taste — 5 mixes picked from our live library.', m1go:'Take the quiz →',
   m2h:'Mix Builder', m2p:'Pick a base — build a mix from additive and accent with a live ratio breakdown.', m2go:'Build a mix →',
   m3h:'Premade Mixes', m3p:'A catalog of factory premixes: mood, strength and composition of each product.', m3go:'Browse mixes →',
-  m4h:'Brand Catalog', m4p:'18 tobacco brands: strength, cut, signature flavors and lines.', m4go:'Open catalog →',
+  m4h:'Brand Catalog', m4p:'Tobacco brands: strength, cut, signature flavors and lines. Click a brand to see every tobacco it makes.', m4go:'Open catalog →',
   m5h:'Recipe Library', m5p:'Over 100 vetted mix recipes. Filter by mood, season, strength — each card includes a bowl recommendation.', m5go:'Open library →',
   libTitle:'Recipe Library',
   libSub:'All 100+ curated recipes. Filter by mood, season or strength — every card shows breakdown, example brands and bowl type.',
@@ -2415,6 +2541,8 @@ const STR={
   pmSub:'Factory premixes — tobacco already blended by the maker. Filter by mood and strength; every card can be saved to a Google Sheet.',
   pmMoodChill:'Chill', pmMoodParty:'Party', pmMoodExp:'Experiment',
   pmComp:'Contains', pmEmpty:'Nothing matches these filters.',
+  pmAllBrands:'All brands', pmSearch:'Search by name or flavour…', pmShowMore:'Show {n} more',
+  libSearch:'Search recipes or flavours…',
   save:'Save', saveToLibrary:'Publish to library', saving:'Saving…', saved:'Saved',
   seedBtn:'Push inline catalog to Sheets', seedRunning:'Uploading…', seedDone:'Done · {n} rows',
   seedErr:'Upload failed — check your Sheets setup',
@@ -2438,6 +2566,12 @@ const STR={
   abDup:'Brand "{name}" is already in the catalog.',
   abErr:'Could not save brand.',
   abErrName:'Please enter a brand name',
+  brandModalLoading:'Loading brand tobaccos…',
+  brandModalReady:'Ready-mixes',
+  brandModalMono:'Mono-flavors',
+  brandModalEmpty:'No tobaccos loaded for this brand yet. Click "📤 Push inline catalog to Sheets" from the Premade Mixes tab.',
+  brandModalGr:'g',
+  brandModalCollapse:'Collapse',
   sheetLocal:'Built-in data · Google Sheets not connected',
   sheetSynced:'Synced with Google Sheets',
   sheetErr:'Sheets unavailable — showing built-in data',
@@ -2923,6 +3057,94 @@ function catBadge(m){
 }
 
 /* ===================================================================
+   BRAND LOGO SVGs — distinctive icons for popular brands + colored
+   monogram fallback for the rest. Keyed by the same fuzzy-normalised
+   form as the brandProducts lookup (so "Dark Side" ≡ "Darkside").
+   =================================================================== */
+const BRAND_PALETTE = [
+  '#f0913c','#43c2a8','#c233d6','#c8568f','#1CBCEC',
+  '#9aa15a','#c79ad6','#d6533a','#f0b62e','#bb84fc','#4a3ce8'
+];
+function _brandNorm(s){ return String(s||'').toLowerCase().replace(/[\s\-_]+/g,''); }
+function _brandHash(s){
+  let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return Math.abs(h);
+}
+function _brandColor(name){ return BRAND_PALETTE[_brandHash(name) % BRAND_PALETTE.length]; }
+
+// Distinctive marks for popular brands. Each is a complete <svg> ready to inject.
+// Conventions: 40x40 viewBox, stroke-linecap/linejoin round, color set inline.
+const BRAND_ICONS = {
+  // Dark Side — circle with a watching eye
+  darkside: `<svg viewBox="0 0 40 40" style="color:#d6533a"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><ellipse cx="20" cy="20" rx="11" ry="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="20" r="3.5" fill="currentColor"/></svg>`,
+  // MustHave — bold checkmark in a circle
+  musthave: `<svg viewBox="0 0 40 40" style="color:#43c2a8"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M11 20 L17 26 L29 14" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  // Black Burn / Burn — flame
+  blackburn: `<svg viewBox="0 0 40 40" style="color:#d6533a"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M22 8c-1 5-5 8-5 13s3 9 7 9 8-4 8-9c0-4-5-9-10-13z" fill="currentColor"/></svg>`,
+  burn: `<svg viewBox="0 0 40 40" style="color:#f0913c"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M22 8c-1 5-5 8-5 13s3 9 7 9 8-4 8-9c0-4-5-9-10-13z" fill="currentColor"/></svg>`,
+  overdose: `<svg viewBox="0 0 40 40" style="color:#c233d6"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M20 8 L23 17 L32 17 L25 23 L28 32 L20 26 L12 32 L15 23 L8 17 L17 17 Z" fill="currentColor"/></svg>`,
+  // Adalya — Turkish crescent + 8-point star
+  adalya: `<svg viewBox="0 0 40 40" style="color:#c8568f"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M14 12a10 10 0 1 0 0 16 8 8 0 1 1 0-16z" fill="currentColor"/><path d="M26 20 L28 17 L31 18 L29 21 L31 24 L28 24 L26 27 L24 24 L21 24 L23 21 L21 18 L24 17 Z" fill="currentColor"/></svg>`,
+  // Sebero — snowflake (Arctic Mix)
+  sebero: `<svg viewBox="0 0 40 40" style="color:#1CBCEC"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"><line x1="20" y1="8" x2="20" y2="32"/><line x1="9.6" y1="14" x2="30.4" y2="26"/><line x1="9.6" y1="26" x2="30.4" y2="14"/><path d="M16 10 L20 13 L24 10 M16 30 L20 27 L24 30 M11 17 L13 19 L11 22 M29 17 L27 19 L29 22 M13 13 L15 15 M27 27 L25 25"/></g></svg>`,
+  // Element — four elements as dots in corners
+  element: `<svg viewBox="0 0 40 40" style="color:#43c2a8"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="13" cy="13" r="3" fill="currentColor"/><circle cx="27" cy="13" r="3" fill="currentColor"/><circle cx="13" cy="27" r="3" fill="currentColor"/><circle cx="27" cy="27" r="3" fill="currentColor"/><circle cx="20" cy="20" r="2" fill="currentColor"/></svg>`,
+  // Fumari — wisp of smoke
+  fumari: `<svg viewBox="0 0 40 40" style="color:#f0b62e"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M14 30 Q12 24 16 22 Q22 20 19 15 Q17 11 22 9" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M22 30 Q26 26 23 22 Q20 19 25 17" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".55"/></svg>`,
+  // Tangiers — palm tree
+  tangiers: `<svg viewBox="0 0 40 40" style="color:#9aa15a"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M20 32 L20 18" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M20 18 Q12 10 8 14 M20 18 Q28 10 32 14 M20 18 Q14 10 14 8 M20 18 Q26 10 26 8 M20 18 Q12 18 8 22 M20 18 Q28 18 32 22" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`,
+  // Al Fakher — crescent moon
+  alfakher: `<svg viewBox="0 0 40 40" style="color:#f0b62e"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M16 9a11 11 0 1 0 0 22 9 9 0 1 1 0-22z" fill="currentColor"/></svg>`,
+  // Nakhla — pyramid + sun
+  nakhla: `<svg viewBox="0 0 40 40" style="color:#f0913c"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="20" cy="14" r="3.5" fill="currentColor"/><path d="M20 17 L9 30 L31 30 Z" fill="currentColor"/></svg>`,
+  // Mazaya — Arabic ornament dot with rays
+  mazaya: `<svg viewBox="0 0 40 40" style="color:#c79ad6"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="20" cy="20" r="3" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="20" y1="10" x2="20" y2="13"/><line x1="20" y1="27" x2="20" y2="30"/><line x1="10" y1="20" x2="13" y2="20"/><line x1="27" y1="20" x2="30" y2="20"/><line x1="13" y1="13" x2="15" y2="15"/><line x1="25" y1="25" x2="27" y2="27"/><line x1="27" y1="13" x2="25" y2="15"/><line x1="13" y1="27" x2="15" y2="25"/></g></svg>`,
+  // Spectrum — rainbow arcs
+  spectrum: `<svg viewBox="0 0 40 40" style="color:#bb84fc"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M9 27a11 11 0 0 1 22 0" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M13 27a7 7 0 0 1 14 0" fill="none" stroke="currentColor" stroke-width="2" opacity=".7"/><path d="M17 27a3 3 0 0 1 6 0" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".45"/></svg>`,
+  // Daily Hookah — sun rays
+  dailyhookah: `<svg viewBox="0 0 40 40" style="color:#f0b62e"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="20" cy="20" r="5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="20" y1="8" x2="20" y2="11"/><line x1="20" y1="29" x2="20" y2="32"/><line x1="8" y1="20" x2="11" y2="20"/><line x1="29" y1="20" x2="32" y2="20"/><line x1="12" y1="12" x2="14" y2="14"/><line x1="26" y1="26" x2="28" y2="28"/><line x1="28" y1="12" x2="26" y2="14"/><line x1="12" y1="28" x2="14" y2="26"/></g></svg>`,
+  // Bonche — premium diamond shield
+  bonche: `<svg viewBox="0 0 40 40" style="color:#c233d6"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M20 9 L30 17 L20 31 L10 17 Z" fill="currentColor"/><path d="M20 9 L20 31 M10 17 L30 17" stroke="#1a140c" stroke-width="1.2" opacity=".5"/></svg>`,
+  // Starbuzz — 5-point star
+  starbuzz: `<svg viewBox="0 0 40 40" style="color:#1CBCEC"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M20 8 L23.5 16.5 L32.5 17.5 L26 24 L27.5 32.5 L20 28 L12.5 32.5 L14 24 L7.5 17.5 L16.5 16.5 Z" fill="currentColor"/></svg>`,
+  // Serbetli — sherbet chalice
+  serbetli: `<svg viewBox="0 0 40 40" style="color:#c8568f"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M11 12 H29 L24 23 Q24 26 20 26 Q16 26 16 23 Z" fill="currentColor"/><line x1="20" y1="26" x2="20" y2="31" stroke="currentColor" stroke-width="2"/><line x1="15" y1="31" x2="25" y2="31" stroke="currentColor" stroke-width="2"/></svg>`,
+  // Duft — water droplet
+  duft: `<svg viewBox="0 0 40 40" style="color:#43c2a8"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M20 9 C14 16 12 20 12 23 a8 8 0 0 0 16 0 c0-3-2-7-8-14z" fill="currentColor"/></svg>`,
+  // WTO — bold W
+  wto: `<svg viewBox="0 0 40 40" style="color:#9aa15a"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M8 13 L13 28 L17 18 L20 28 L23 18 L27 28 L32 13" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
+  // Banger — explosion burst
+  banger: `<svg viewBox="0 0 40 40" style="color:#d6533a"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M20 9 L22 17 L28 13 L25 20 L31 23 L24 24 L25 31 L20 26 L15 31 L16 24 L9 23 L15 20 L12 13 L18 17 Z" fill="currentColor"/></svg>`,
+  // Satyr — horns / triangle
+  satyr: `<svg viewBox="0 0 40 40" style="color:#c79ad6"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M14 10 Q11 13 12 18 Q14 21 17 19 Q19 16 17 11 Z M26 10 Q29 13 28 18 Q26 21 23 19 Q21 16 23 11 Z" fill="currentColor"/><path d="M14 21 Q20 32 26 21" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+  // Сарма (Сарма) — wreath
+  сарма: `<svg viewBox="0 0 40 40" style="color:#9aa15a"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M20 32 L20 12 Q22 16 25 17 Q22 18 22 22 Q25 22 27 20 M20 22 Q18 18 15 17 Q18 16 18 12" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`,
+  // Нaш — Russian "Н" with tri-stripe
+  нaш: `<svg viewBox="0 0 40 40" style="color:#1CBCEC"><circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M14 12 V28 M14 20 H26 M26 12 V28" stroke="currentColor" stroke-width="2.8" fill="none" stroke-linecap="round"/></svg>`
+};
+
+function brandLogoSvg(name){
+  if(!name) return generateMonogram('?');
+  const key = _brandNorm(name);
+  if(BRAND_ICONS[key]) return BRAND_ICONS[key];
+  // Try with cyrillic-stripped key
+  return generateMonogram(name);
+}
+
+function generateMonogram(name){
+  const color = _brandColor(name||'?');
+  // First word's first letter, or first two ASCII initials.
+  const cleaned = String(name||'?').trim();
+  let initial = '?';
+  const cap = cleaned.match(/[A-Za-zА-Яа-я]/);
+  if(cap) initial = cap[0].toUpperCase();
+  return `<svg viewBox="0 0 40 40" style="color:${color}">
+    <circle cx="20" cy="20" r="18" fill="currentColor" fill-opacity=".18"/>
+    <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.8" fill="none"/>
+    <text x="20" y="27" text-anchor="middle" font-size="20" font-weight="900" fill="currentColor" font-family="Playfair Display,serif">${initial}</text>
+  </svg>`;
+}
+
+/* ===================================================================
    MIX CARD RENDERER
    =================================================================== */
 function roleLabel(i,n){
@@ -3346,10 +3568,12 @@ function toast(msg){
 /* ===================================================================
    PREMADE MIXES VIEW
    =================================================================== */
-let pmF={mood:'all',str:'all'};
+let pmF={mood:'all',str:'all',brand:'all',query:''};
+let pmShow=60;  // initial render cap; "show more" raises it
 
 async function startPremade(){
-  pmF={mood:'all',str:'all'};
+  pmF={mood:'all',str:'all',brand:'all',query:''};
+  pmShow=60;
   go('premade');
   renderPremade();
   if(CONFIG.SHEETS_URL && sheetState!=='synced'){
@@ -3357,11 +3581,19 @@ async function startPremade(){
     renderPremade();
   }
 }
-function setPmMood(v){ pmF.mood=v; renderPremade(); }
-function setPmStr(v){ pmF.str=v; renderPremade(); }
+function setPmMood(v){ pmF.mood=v;  pmShow=60; renderPremade(); }
+function setPmStr(v){  pmF.str=v;   pmShow=60; renderPremade(); }
+function setPmBrand(v){pmF.brand=v; pmShow=60; renderPremade(); }
+function setPmQuery(v){pmF.query=(v||'').trim().toLowerCase(); pmShow=60; renderPremade(); }
+function pmShowMore(){ pmShow+=60; renderPremade(); }
 function pmPasses(p){
-  if(pmF.mood!=='all' && p.mood!==pmF.mood) return false;
-  if(pmF.str!=='all'  && p.str!==pmF.str)  return false;
+  if(pmF.mood!=='all'  && p.mood!==pmF.mood)   return false;
+  if(pmF.str!=='all'   && p.str!==pmF.str)     return false;
+  if(pmF.brand!=='all' && String(p.brand||'').toLowerCase()!==pmF.brand) return false;
+  if(pmF.query){
+    const hay=(String(p.name||'')+' '+String(p.brand||'')+' '+String(p.ru||'')+' '+(p.comp||[]).map(c=>c.ru+' '+c.en).join(' ')).toLowerCase();
+    if(hay.indexOf(pmF.query)<0) return false;
+  }
   return true;
 }
 function premadeCardHTML(p){
@@ -3401,12 +3633,29 @@ function renderPremade(){
   const list=PREMADE.filter(pmPasses);
   const mb=(v,k)=>`<button class="${pmF.mood===v?'on':''}" onclick="setPmMood('${v}')">${T(k)}</button>`;
   const sb=(v,k)=>`<button class="${pmF.str===v?'on':''}" onclick="setPmStr(${typeof v==='string'?`'${v}'`:v})">${T(k)}</button>`;
+  // Brand dropdown (sorted, counts)
+  const brandCounts={};
+  PREMADE.forEach(p=>{ const b=String(p.brand||'').trim(); if(b) brandCounts[b]=(brandCounts[b]||0)+1; });
+  const brandList=Object.entries(brandCounts).sort((a,b)=>b[1]-a[1]);
+  const brandOpts=`<option value="all">${T('pmAllBrands')} (${PREMADE.length})</option>` +
+    brandList.map(([b,n])=>`<option value="${b.toLowerCase()}" ${pmF.brand===b.toLowerCase()?'selected':''}>${b} (${n})</option>`).join('');
   document.getElementById('pmFilters').innerHTML=`
     <div class="fgroup">${mb('all','catAll')}${mb('chill','pmMoodChill')}${mb('party','pmMoodParty')}${mb('experiment','pmMoodExp')}</div>
     <div class="fgroup">${sb('all','catAll')}${sb(1,'s1')}${sb(2,'s2')}${sb(3,'s3')}</div>
+    <select class="pm-brand-sel" onchange="setPmBrand(this.value)">${brandOpts}</select>
+    <input class="pm-search" type="search" placeholder="${T('pmSearch')}" value="${pmF.query.replace(/"/g,'&quot;')}" oninput="setPmQuery(this.value)"/>
     <span class="fcount">${list.length} / ${PREMADE.length}</span>`;
   const g=document.getElementById('pmGrid');
-  g.innerHTML=list.length?list.map(premadeCardHTML).join(''):`<div class="empty">${T('pmEmpty')}</div>`;
+  if(!list.length){
+    g.innerHTML=`<div class="empty">${T('pmEmpty')}</div>`;
+    return;
+  }
+  const shown=list.slice(0,pmShow);
+  let html=shown.map(premadeCardHTML).join('');
+  if(list.length>pmShow){
+    html+=`<div class="show-more-wrap"><button class="show-more" onclick="pmShowMore()">${T('pmShowMore').replace('{n}', Math.min(60, list.length-pmShow))} <span class="show-more-count">(${pmShow}/${list.length})</span></button></div>`;
+  }
+  g.innerHTML=html;
 }
 
 /* ===================================================================
@@ -3450,12 +3699,13 @@ function renderCatalog(){
   grid.innerHTML=list.map(b=>{
     const flames=[1,2,3].map(i=>`<span class="${i<=b.str?'lit':''}">🔥</span>`).join('');
     const sig=b.sig.map(s=>`<span>${s[LANG]}</span>`).join('');
+    const safeName=String(b.name||'').replace(/'/g,"\\'");
     return `
-     <div class="brand-card fade">
+     <div class="brand-card fade clickable" onclick="openBrandModal('${safeName}')">
        <div class="bc-head">
-         <span class="flag">${b.flag}</span>
-         <div>
-           <h3>${b.name}</h3>
+         <span class="brand-logo-wrap">${brandLogoSvg(b.name)}</span>
+         <div class="bc-title">
+           <h3>${b.name} <span class="flag-mini" title="${b.origin[LANG]||''}">${b.flag}</span></h3>
            ${LANG==='ru'?`<div class="ru-name">${b.ru}</div>`:''}
          </div>
          <span class="spacer"></span>
@@ -3477,17 +3727,25 @@ function renderCatalog(){
 /* ===================================================================
    RECIPE LIBRARY  (browse the 100+ curated MIXES with filters)
    =================================================================== */
-let libF={mood:'all',season:'all',str:'all',fam:'all'};
-function startLibrary(){ libF={mood:'all',season:'all',str:'all',fam:'all'}; go('library'); renderLibrary(); }
-function setLibMood(v){ libF.mood=v; renderLibrary(); }
-function setLibSeason(v){ libF.season=v; renderLibrary(); }
-function setLibStr(v){ libF.str=v; renderLibrary(); }
-function setLibFam(v){ libF.fam=v; renderLibrary(); }
+let libF={mood:'all',season:'all',str:'all',fam:'all',query:''};
+let libShow=60;
+function startLibrary(){ libF={mood:'all',season:'all',str:'all',fam:'all',query:''}; libShow=60; go('library'); renderLibrary(); }
+function setLibMood(v){ libF.mood=v; libShow=60; renderLibrary(); }
+function setLibSeason(v){ libF.season=v; libShow=60; renderLibrary(); }
+function setLibStr(v){    libF.str=v;    libShow=60; renderLibrary(); }
+function setLibFam(v){    libF.fam=v;    libShow=60; renderLibrary(); }
+function setLibQuery(v){  libF.query=(v||'').trim().toLowerCase(); libShow=60; renderLibrary(); }
+function libShowMore(){   libShow+=60; renderLibrary(); }
 function libPasses(m){
   if(libF.mood!=='all' && !(m.mood||[]).includes(libF.mood)) return false;
   if(libF.season!=='all' && (m.season||'all')!==libF.season && (m.season||'all')!=='all') return false;
   if(libF.str!=='all' && m.str!==libF.str) return false;
   if(libF.fam!=='all' && m.fam!==libF.fam) return false;
+  if(libF.query){
+    const hay=(String(m.en||'')+' '+String(m.ru||'')+' '+String(m.brands||'')+' '+
+      (m.comp||[]).map(c=>(F[c[0]]?F[c[0]].en+' '+F[c[0]].ru:c[0])).join(' ')).toLowerCase();
+    if(hay.indexOf(libF.query)<0) return false;
+  }
   return true;
 }
 function renderLibrary(){
@@ -3501,11 +3759,17 @@ function renderLibrary(){
     <div class="fgroup">${sb('all','catAll')}${sb('sum','libSSum')}${sb('spr','libSSpr')}${sb('aut','libSAut')}${sb('win','libSWin')}</div>
     <div class="fgroup">${stB('all','catAll')}${stB(1,'s1')}${stB(2,'s2')}${stB(3,'s3')}</div>
     <div class="fgroup">${fb('all','catAll')}${fb('fruit','libFFruit')}${fb('berry','libFBerry')}${fb('citrus','libFCitrus')}${fb('mint','libFMint')}${fb('dessert','libFDess')}${fb('spicy','libFSpicy')}${fb('gastro','libFGastro')}${fb('classic','libFClassic')}</div>
+    <input class="pm-search" type="search" placeholder="${T('libSearch')}" value="${libF.query.replace(/"/g,'&quot;')}" oninput="setLibQuery(this.value)"/>
     <span class="fcount">${list.length} / ${MIXES.length}</span>`;
   const g=document.getElementById('libGrid');
   if(!list.length){ g.innerHTML=`<div class="empty">${T('catEmpty')}</div>`; return; }
   // Library cards skip the Save button — items are already in the library, only the Like control matters.
-  g.innerHTML=list.map((m,i)=>mixCardHTML(m,{source:'library'})).join('');
+  const shown=list.slice(0,libShow);
+  let html=shown.map(m=>mixCardHTML(m,{source:'library'})).join('');
+  if(list.length>libShow){
+    html+=`<div class="show-more-wrap"><button class="show-more" onclick="libShowMore()">${T('pmShowMore').replace('{n}', Math.min(60, list.length-libShow))} <span class="show-more-count">(${libShow}/${list.length})</span></button></div>`;
+  }
+  g.innerHTML=html;
 }
 
 /* ===================================================================
@@ -3571,6 +3835,123 @@ async function dumpInlineArrays(){
   console.log('Exported '+MIXES.length+' mixes + '+BRANDS.length+' brands.');
 }
 
+/* ===================================================================
+   BRAND DETAIL POP-UP — click a brand card to see all its tobaccos
+   =================================================================== */
+async function openBrandModal(brandName){
+  const modal=document.getElementById('brandModal');
+  // Build a logo + title combination
+  document.getElementById('brandModalTitle').innerHTML =
+    `<span class="brand-modal-logo">${brandLogoSvg(brandName)}</span>` +
+    `<span>${brandName}</span>`;
+  document.getElementById('brandModalSub').textContent=T('brandModalLoading');
+  document.getElementById('brandModalBody').innerHTML=`<div class="empty">${T('brandModalLoading')}</div>`;
+  modal.classList.remove('hidden');
+
+  // Strategy: enumerate every known brand-name spelling that normalises to our
+  // target (handles "Darkside" ≡ "Dark Side", "MustHave" ≡ "Must Have"); fetch
+  // brandProducts for each spelling; merge with a local fuzzy PREMADE filter.
+  const normB=s=>String(s||'').toLowerCase().replace(/[\s\-_]+/g,'');
+  const target=normB(brandName);
+  const aliases=new Set([brandName]);
+  (typeof BRANDS!=='undefined'?BRANDS:[]).forEach(b=>{ if(normB(b.name)===target) aliases.add(b.name); });
+  (typeof PREMADE!=='undefined'?PREMADE:[]).forEach(p=>{ if(normB(p.brand)===target) aliases.add(p.brand); });
+  let serverPm=[], serverMn=[];
+  if(CONFIG.SHEETS_URL){
+    for(const alias of aliases){
+      try{
+        const url=CONFIG.SHEETS_URL+(CONFIG.SHEETS_URL.includes('?')?'&':'?')+'action=brandProducts&brand='+encodeURIComponent(alias);
+        const j=await fetch(url).then(r=>r.json());
+        if(j && j.ok){ serverPm=serverPm.concat(j.premade||[]); serverMn=serverMn.concat(j.mono||[]); }
+      }catch(e){ /* silent */ }
+    }
+  }
+  const localPm=(typeof PREMADE!=='undefined'?PREMADE:[]).filter(p=>normB(p.brand)===target)
+    .map(p=>({brand:p.brand,name:p.name,line:p.line||'',category:p.cat||'',strength:p.str||2,
+              desc_ru:(p.d&&p.d.ru)||'', flavor_paren:(p.comp||[]).map(c=>c.ru).join(', ')}));
+  // Merge premade (server ∪ local) deduped by (brand+name); same for mono.
+  const seenPm={}, mergedPm=[];
+  for(const p of serverPm.concat(localPm)){
+    const k=normB(p.brand)+'|'+String(p.name||'').toLowerCase().trim();
+    if(!seenPm[k]){ seenPm[k]=true; mergedPm.push(p); }
+  }
+  const seenMn={}, mergedMn=[];
+  for(const m of serverMn){
+    const k=normB(m.brand)+'|'+String(m.name||'').toLowerCase().trim();
+    if(!seenMn[k]){ seenMn[k]=true; mergedMn.push(m); }
+  }
+  const data={ok:true, premade:mergedPm, mono:mergedMn};
+  renderBrandModalBody(brandName, data);
+}
+function closeBrandModal(){ document.getElementById('brandModal').classList.add('hidden'); }
+
+// Tracks how many items each section currently shows (for pop-up pagination).
+let bmShow={pm:30, mn:30, brand:''};
+function bmShowMore(which){
+  if(which==='pm') bmShow.pm = (bmShow.pm===Infinity) ? 30 : Infinity;
+  if(which==='mn') bmShow.mn = (bmShow.mn===Infinity) ? 30 : Infinity;
+  // Re-render with the cached last data
+  if(window._bmLast) renderBrandModalBody(bmShow.brand, window._bmLast);
+}
+function renderBrandModalBody(brandName, data){
+  if(bmShow.brand !== brandName){ bmShow={pm:30, mn:30, brand:brandName}; }
+  window._bmLast = data;
+  const pm=data.premade||[];
+  const mn=data.mono||[];
+  document.getElementById('brandModalSub').textContent=
+    `${pm.length} ${T('brandModalReady')} · ${mn.length} ${T('brandModalMono')}`;
+  const body=document.getElementById('brandModalBody');
+  if(!pm.length && !mn.length){
+    body.innerHTML=`<div class="empty">${T('brandModalEmpty')}</div>`;
+    return;
+  }
+  const renderPm=p=>{
+    const flavours=p.flavor_paren||p.comp_ru||p.comp_en||'';
+    const strLabel = T('s'+(p.strength||2));
+    return `<div class="bm-item bm-premade">
+      <div class="bm-line">
+        <span class="bm-tag bm-tag-ready">${T('brandModalReady')}</span>
+        ${p.line?`<span class="bm-tag">${p.line}</span>`:''}
+      </div>
+      <div class="bm-name">${p.name||''}</div>
+      ${flavours?`<div class="bm-flavours">${flavours}</div>`:''}
+      <div class="bm-meta">${strLabel}${p.category?` · ${p.category}`:''}</div>
+    </div>`;
+  };
+  const renderMono=m=>{
+    const strLabel=T('s'+(parseInt(m.strength)||2));
+    const img=(m.image||'').trim();
+    const imgUrl = img && !/^https?:/i.test(img) ? ('https://spb.pitersmoke.store'+img) : img;
+    return `<div class="bm-item bm-mono">
+      ${imgUrl?`<img class="bm-thumb" src="${imgUrl}" loading="lazy" onerror="this.style.display='none'"/>`:''}
+      <div class="bm-line">
+        <span class="bm-tag bm-tag-mono">${T('brandModalMono')}</span>
+        ${m.line?`<span class="bm-tag">${m.line}</span>`:''}
+      </div>
+      <div class="bm-name">${m.name||''}</div>
+      ${m.flavor_paren?`<div class="bm-flavours">${m.flavor_paren}</div>`:''}
+      <div class="bm-meta">${strLabel}${m.category?` · ${m.category}`:''}${m.weight?` · ${m.weight} ${T('brandModalGr')}`:''}</div>
+    </div>`;
+  };
+  const sectionHtml=(label, items, renderer, key)=>{
+    if(!items.length) return '';
+    const limit = bmShow[key];
+    const shown = items.slice(0, limit);
+    const more  = items.length - shown.length;
+    let block = `<div class="bm-section"><h3>${label} (${items.length})</h3><div class="bm-grid">`+
+                shown.map(renderer).join('') + `</div>`;
+    if(more > 0){
+      block += `<div class="bm-section-more"><button class="show-more" onclick="bmShowMore('${key}')">${T('pmShowMore').replace('{n}', more)}</button></div>`;
+    } else if(limit === Infinity && items.length > 30){
+      block += `<div class="bm-section-more"><button class="show-more show-more-collapse" onclick="bmShowMore('${key}')">${T('brandModalCollapse')}</button></div>`;
+    }
+    block += `</div>`;
+    return block;
+  };
+  body.innerHTML = sectionHtml(T('brandModalReady'), pm, renderPm, 'pm')
+                 + sectionHtml(T('brandModalMono'),  mn, renderMono, 'mn');
+}
+
 function passAge(){ document.getElementById('ageGate').classList.add('hidden'); }
 function openPay(){
   if(isPro){ return; }
@@ -3589,6 +3970,24 @@ function unlockPro(){
 
 /* ---------- INIT ---------- */
 setLang('ru');
+
+// Escape closes whatever pop-up is open (excluding the age gate, which is mandatory).
+document.addEventListener('keydown', e=>{
+  if(e.key !== 'Escape') return;
+  ['brandModal','addBrandModal','payModal'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el && !el.classList.contains('hidden')) el.classList.add('hidden');
+  });
+});
+
+// Click outside the modal box also closes (overlay click, not modal click).
+['brandModal','addBrandModal','payModal'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('click', e=>{
+    if(e.target === el) el.classList.add('hidden');
+  });
+});
 // Pull fresh data from Sheets in the background; re-render whatever view is active when it lands.
 if(CONFIG.SHEETS_URL){
   Promise.all([loadMixes(), loadBrands()]).then(()=>{
